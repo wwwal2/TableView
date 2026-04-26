@@ -1,0 +1,15 @@
+# PostgreSQL stores its cluster under ./database/pgdata (bind mount).
+# From repo root: mkdir -p database/pgdata && docker compose up -d
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: database_table_pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/pgdata:/var/lib/postgresql/data

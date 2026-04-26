@@ -1,0 +1,2 @@
+# PostgreSQL cluster files (directory may be empty until first init)
+database/pgdata/**
