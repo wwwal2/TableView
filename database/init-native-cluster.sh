@@ -10,8 +10,7 @@ if [[ -f "$PGDATA/PG_VERSION" ]]; then
 fi
 mkdir -p "$PGDATA"
 if ! command -v initdb >/dev/null 2>&1; then
-  echo "initdb not found. Install PostgreSQL (e.g. sudo apt install postgresql) or use Docker:" >&2
-  echo "  mkdir -p database/pgdata && docker compose up -d" >&2
+  echo "initdb not found. Install PostgreSQL (e.g. sudo apt install postgresql)." >&2
   exit 1
 fi
 # Dev-only auth; tighten (--auth-host=scram-sha-256 + pg_hba) before any exposure.
