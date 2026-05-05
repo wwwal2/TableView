@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: database_table_db_dev
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: appdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d appdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./BE
+      dockerfile: Dockerfile.dev
+    container_name: database_table_backend_dev
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://app:app@db:5432/appdb
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./BE:/app
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./FE
+      dockerfile: Dockerfile.dev
+    container_name: database_table_frontend_dev
+    environment:
+      VITE_API_PROXY_TARGET: http://backend:3001
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./FE:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  pgdata_dev:
